@@ -12,14 +12,20 @@ import java.sql.*;
  *  5. 작업 중 생성된 Connection , Statement, ResultSet 같은 리소스는 작업 마친 후 반드시 닫아준다.
  *  6. JDBC API가 만들어내는 예외를 잡아 직접 처리하거나, 메소드에 throws를 선언한다.
  */
-public abstract class UserDao {
-    
+public class UserDao {
+
+    private SimpleConnectionMaker simpleConnectionMaker;
+
+    public UserDao(){
+        simpleConnectionMaker = new SimpleConnectionMaker();
+    }
+
     public void add(User user) throws ClassNotFoundException, SQLException {
         // 동적으로 클래스 정보를 가져온다.
         Class.forName("com.mysql.cj.jdbc.Driver");
         
         // DB 연결을 위한 커넥션을 가져온다.
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.makeNewConnection();
 
         // SQL을 담은 Statement (Statement 또는 PreparedStatement)를 만든다.
         String query = "insert into users(id, name, password) values (?,?,?)";
@@ -41,7 +47,7 @@ public abstract class UserDao {
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         // DB 연결을 위한 커넥션을 가져온다.
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.makeNewConnection();
 
         // SQL을 담은 Statement (Statement 또는 PreparedStatement)를 만든다.
         String query = "select * from users where id = ?";
@@ -64,6 +70,5 @@ public abstract class UserDao {
         return user;
     }
 
-    public abstract Connection getConnection() throws SQLException;
 
 }
