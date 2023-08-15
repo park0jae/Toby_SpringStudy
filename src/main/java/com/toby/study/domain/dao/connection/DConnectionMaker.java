@@ -1,12 +1,12 @@
-package com.toby.study.domain.dao;
+package com.toby.study.domain.dao.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class SimpleConnectionMaker {
-
-    public Connection makeNewConnection() throws SQLException {
+public class DConnectionMaker implements ConnectionMaker{
+    @Override
+    public Connection makeConnection() throws SQLException {
         String url = "jdbc:mysql://localhost:3306/studyToby";
         String dbUser = "root";
         String pw = "12345678";
@@ -14,5 +14,4 @@ public class SimpleConnectionMaker {
 
         return c;
     }
-
 }

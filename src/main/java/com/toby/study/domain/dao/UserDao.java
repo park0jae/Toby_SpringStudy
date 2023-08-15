@@ -1,5 +1,7 @@
 package com.toby.study.domain.dao;
 
+import com.toby.study.domain.dao.connection.ConnectionMaker;
+import com.toby.study.domain.dao.connection.DConnectionMaker;
 import com.toby.study.domain.user.User;
 
 import java.sql.*;
@@ -14,10 +16,10 @@ import java.sql.*;
  */
 public class UserDao {
 
-    private SimpleConnectionMaker simpleConnectionMaker;
+    private ConnectionMaker simpleConnectionMaker;
 
     public UserDao(){
-        simpleConnectionMaker = new SimpleConnectionMaker();
+        simpleConnectionMaker = new DConnectionMaker();
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
@@ -25,7 +27,7 @@ public class UserDao {
         Class.forName("com.mysql.cj.jdbc.Driver");
         
         // DB 연결을 위한 커넥션을 가져온다.
-        Connection c = simpleConnectionMaker.makeNewConnection();
+        Connection c = simpleConnectionMaker.makeConnection();
 
         // SQL을 담은 Statement (Statement 또는 PreparedStatement)를 만든다.
         String query = "insert into users(id, name, password) values (?,?,?)";
@@ -47,7 +49,7 @@ public class UserDao {
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         // DB 연결을 위한 커넥션을 가져온다.
-        Connection c = simpleConnectionMaker.makeNewConnection();
+        Connection c = simpleConnectionMaker.makeConnection();
 
         // SQL을 담은 Statement (Statement 또는 PreparedStatement)를 만든다.
         String query = "select * from users where id = ?";
