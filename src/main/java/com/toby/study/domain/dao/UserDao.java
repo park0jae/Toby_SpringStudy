@@ -18,8 +18,8 @@ public class UserDao {
 
     private ConnectionMaker simpleConnectionMaker;
 
-    public UserDao(){
-        simpleConnectionMaker = new DConnectionMaker();
+    public UserDao(ConnectionMaker connectionMaker){
+        simpleConnectionMaker = connectionMaker;
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
