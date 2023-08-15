@@ -1,7 +1,6 @@
-package com.toby.study.domain.dao;
+package com.toby.study.dao;
 
-import com.toby.study.domain.dao.connection.ConnectionMaker;
-import com.toby.study.domain.dao.connection.DConnectionMaker;
+import com.toby.study.connection.ConnectionMaker;
 import com.toby.study.domain.user.User;
 
 import java.sql.*;
@@ -23,9 +22,6 @@ public class UserDao {
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        // 동적으로 클래스 정보를 가져온다.
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        
         // DB 연결을 위한 커넥션을 가져온다.
         Connection c = simpleConnectionMaker.makeConnection();
 
@@ -45,9 +41,6 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        // 동적으로 클래스 정보를 가져온다.
-        Class.forName("com.mysql.cj.jdbc.Driver");
-
         // DB 연결을 위한 커넥션을 가져온다.
         Connection c = simpleConnectionMaker.makeConnection();
 
