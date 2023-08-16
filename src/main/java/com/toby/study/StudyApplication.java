@@ -8,7 +8,7 @@ import java.sql.SQLException;
 @SpringBootApplication
 public class StudyApplication {
 
-	public static void main(String[] args) throws SQLException, ClassNotFoundException {
+	public static void main(String[] args){
 		SpringApplication.run(StudyApplication.class, args);
 	}
 
