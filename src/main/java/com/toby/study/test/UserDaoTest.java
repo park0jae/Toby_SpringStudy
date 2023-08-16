@@ -1,17 +1,20 @@
 package com.toby.study.test;
 
 import com.toby.study.dao.UserDao;
-import com.toby.study.connection.ConnectionMaker;
-import com.toby.study.connection.DConnectionMaker;
 import com.toby.study.domain.user.User;
 import com.toby.study.factory.DaoFactory;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.SQLException;
 
+import static org.assertj.core.api.Assertions.*;
+
 public class UserDaoTest {
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    @Test
+    public void addAndGet() throws SQLException, ClassNotFoundException {
 
         ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
         UserDao userDao = context.getBean("userDao", UserDao.class);
@@ -28,8 +31,8 @@ public class UserDaoTest {
 
         // 	조회
         User getUser = userDao.get(user.getId());
-        System.out.println(getUser.getName());
-        System.out.println(getUser.getPassword());
-        System.out.println(getUser.getId() + " 조회 성공");
+
+        assertThat(getUser.getName()).isEqualTo(user.getName());
+        assertThat(getUser.getPassword()).isEqualTo(user.getPassword());
     }
 }
