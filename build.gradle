@@ -25,6 +25,9 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
+	// jdbc
+	implementation 'org.springframework:spring-jdbc:5.3.10'
+
 }
 
 tasks.named('test') {

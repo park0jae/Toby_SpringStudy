@@ -24,13 +24,13 @@ public class UserDaoTest {
     ApplicationContext context;
 
     @BeforeEach
-    public void setUp() throws SQLException, ClassNotFoundException {
+    public void setUp() throws SQLException {
         userDao = context.getBean("userDao", UserDao.class);
         userDao.deleteAll();
     }
 
     @Test
-    public void addAndGet() throws SQLException, ClassNotFoundException {
+    public void addAndGet() throws SQLException {
         User user = new User();
 
         user.setId("1");
