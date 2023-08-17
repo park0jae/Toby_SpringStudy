@@ -3,22 +3,34 @@ package com.toby.study.test;
 import com.toby.study.dao.UserDao;
 import com.toby.study.domain.user.User;
 import com.toby.study.factory.DaoFactory;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = DaoFactory.class)
 public class UserDaoTest {
+    UserDao userDao;
+
+    @Autowired
+    ApplicationContext context;
+
+    @BeforeEach
+    public void setUp() throws SQLException, ClassNotFoundException {
+        userDao = context.getBean("userDao", UserDao.class);
+        userDao.deleteAll();
+    }
+
     @Test
     public void addAndGet() throws SQLException, ClassNotFoundException {
-
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        UserDao userDao = context.getBean("userDao", UserDao.class);
-
         User user = new User();
 
         user.setId("1");
