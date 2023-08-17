@@ -3,6 +3,7 @@ package com.toby.study.dao;
 import com.toby.study.connection.ConnectionMaker;
 import com.toby.study.domain.user.User;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 /**
@@ -15,15 +16,15 @@ import java.sql.*;
  */
 public class UserDao {
 
-    private ConnectionMaker simpleConnectionMaker;
+    private DataSource dataSource;
 
-    public UserDao(ConnectionMaker connectionMaker){
-        this.simpleConnectionMaker = connectionMaker;
+    public UserDao(DataSource dataSource){
+        this.dataSource = dataSource;
     }
 
-    public void add(User user) throws ClassNotFoundException, SQLException {
+    public void add(User user) throws SQLException {
         // DB 연결을 위한 커넥션을 가져온다.
-        Connection c = simpleConnectionMaker.makeConnection();
+        Connection c = dataSource.getConnection();
 
         // SQL을 담은 Statement (Statement 또는 PreparedStatement)를 만든다.
         String query = "insert into users(id, name, password) values (?,?,?)";
@@ -40,9 +41,9 @@ public class UserDao {
         c.close();
     }
 
-    public User get(String id) throws ClassNotFoundException, SQLException {
+    public User get(String id)throws SQLException {
         // DB 연결을 위한 커넥션을 가져온다.
-        Connection c = simpleConnectionMaker.makeConnection();
+        Connection c = dataSource.getConnection();
 
         // SQL을 담은 Statement (Statement 또는 PreparedStatement)를 만든다.
         String query = "select * from users where id = ?";
@@ -65,8 +66,8 @@ public class UserDao {
         return user;
     }
 
-    public void deleteAll() throws SQLException, ClassNotFoundException {
-        Connection c = simpleConnectionMaker.makeConnection();
+    public void deleteAll() throws SQLException {
+        Connection c = dataSource.getConnection();
 
         String query = "delete from users";
 
@@ -76,6 +77,4 @@ public class UserDao {
         ps.close();
         c.close();
     }
-
-
 }
