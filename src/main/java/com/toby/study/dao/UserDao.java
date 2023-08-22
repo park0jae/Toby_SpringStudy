@@ -1,6 +1,5 @@
 package com.toby.study.dao;
 
-import com.toby.study.connection.ConnectionMaker;
 import com.toby.study.domain.user.User;
 
 import javax.sql.DataSource;
@@ -16,65 +15,67 @@ import java.sql.*;
  */
 public class UserDao {
 
-    private DataSource dataSource;
+    private JdbcContext jdbcContext;
 
-    public UserDao(DataSource dataSource){
-        this.dataSource = dataSource;
+    public void setJdbcContext(JdbcContext jdbcContext) {
+        this.jdbcContext = jdbcContext;
     }
 
-    public void add(User user) throws SQLException {
-        // DB 연결을 위한 커넥션을 가져온다.
-        Connection c = dataSource.getConnection();
-
-        // SQL을 담은 Statement (Statement 또는 PreparedStatement)를 만든다.
-        String query = "insert into users(id, name, password) values (?,?,?)";
-        PreparedStatement ps = c.prepareStatement(query);
-        
-        // 파라미터 값을 설정해주고 , 만들어진 statement를 실행한다.
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3,user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.close();
-        c.close();
-    }
 
     public User get(String id)throws SQLException {
+
+
         // DB 연결을 위한 커넥션을 가져온다.
-        Connection c = dataSource.getConnection();
+        StatementStrategy strategy = c -> {
+            PreparedStatement ps = c.prepareStatement("select * from users where id = ?");// 선정한 전략 클래스의 오브젝트 생성
 
-        // SQL을 담은 Statement (Statement 또는 PreparedStatement)를 만든다.
-        String query = "select * from users where id = ?";
-        PreparedStatement ps = c.prepareStatement(query);
+            ps.setString(1, id);
 
-        ps.setString(1, id);
+            return ps;
+        };
+
+        ResultSet rs = jdbcContext.workWithResultSet(strategy);// 컨텍스트 호출, 전략 오브젝트 전달
 
         // 조회의 경우 ResultSet 반환
-        ResultSet rs = ps.executeQuery();
         rs.next();
         User user = new User();
         user.setId(rs.getString("id"));
         user.setName(rs.getString("name"));
         user.setPassword(rs.getString("password"));
-
         rs.close();
-        ps.close();
-        c.close();
 
         return user;
     }
 
     public void deleteAll() throws SQLException {
-        Connection c = dataSource.getConnection();
-
-        String query = "delete from users";
-
-        PreparedStatement ps = c.prepareStatement(query);
-
-        ps.executeUpdate();
-        ps.close();
-        c.close();
+        executeSql("delete from users");
     }
+
+    public void executeSql(String sql) throws SQLException {
+        StatementStrategy strategy = c -> c.prepareStatement(sql); // 선정한 전략 클래스의 오브젝트 생성
+        jdbcContext.workWithStatementStrategy(strategy); // 컨텍스트 호출, 전략 오브젝트 전달
+    }
+
+    public void add(User user) throws SQLException {
+        this.executeSql("insert into users(id, name, password) values (?, ?, ?)"
+                , user.getId()
+                , user.getName()
+                , user.getPassword()
+        );
+    }
+
+    public void executeSql(String sql, Object ...parameters) throws SQLException {
+        StatementStrategy stmt = c -> {
+            PreparedStatement ps = c.prepareStatement(sql);
+
+            for(int i=1; i<=parameters.length; i++) {
+                ps.setObject(i, parameters[i-1]);
+            }
+
+            return ps;
+        };
+
+        jdbcContext.workWithStatementStrategy(stmt);
+    }
+
 }
